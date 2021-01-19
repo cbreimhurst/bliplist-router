@@ -1,14 +1,54 @@
 <template>
-    <div>
+    <div class="lists">
         <h2>Lists</h2>
+         <ul>
+            <li v-bind:key="list.uuid" :data-id="list.uuid" v-for="list in listsArr">
+                <a :href="'/list/'+ list.uuid">{{list.name}}</a>
+            </li>
+        </ul>
     </div>
 </template>
 
 <script>
+
+import { createClient } from '@supabase/supabase-js'
+const supabaseUrl = 'https://ezobnhwtsnemtgajfsce.supabase.co'
+const supabaseKey = process.env.VUE_APP_SUPABASE_KEY;
+const supabase = createClient(supabaseUrl, supabaseKey)
+
 export default {
-    name: 'Lists'
+    name: 'Lists',
+    props: [
+        "lists"
+    ],
+        data() {
+        return {
+            listsArr: [],
+        }
+    },
+    async created() {
+
+        let { data: lists, error } = await supabase
+        .from('lists')
+        .select("*")
+
+        this.listsArr = lists
+        this.error = error
+
+    },
 }
 </script>
 
-<style>
+<style scoped>
+
+li {
+  width: 32%;
+  height: 100px;
+  justify-content: center;
+  align-items: center;
+  margin-right: 1%;
+  margin-bottom: 10px;
+  border-radius: 4px;
+}
+
 </style>

@@ -18,7 +18,7 @@ export default new Router({
         component: Lists 
     },
       { 
-        path: '/lists/:uuid', 
+        path: '/list/:uuid', 
         component: List 
       }
     ]
