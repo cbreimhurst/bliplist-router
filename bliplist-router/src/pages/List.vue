@@ -1,17 +1,24 @@
 <template>
     <div>
         <h2>{{title}}</h2>
+        <AddTask v-on:add-task="addTask" />
         <ul class="list">
             <li v-bind:key="task.uuid" :data-id="task.uuid" v-for="task in tasksArr">
             <Task  v-bind:task="task" v-on:delete-task="deleteTask" v-on:complete-task="markComplete"/>
             </li>
         </ul>
+        <!-- <button class="add-task-init"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-plus" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <line x1="12" y1="5" x2="12" y2="19" />
+  <line x1="5" y1="12" x2="19" y2="12" />
+</svg></button> -->
         <a href="/lists"><button>All Lists</button></a>
     </div>
 </template>
 
 <script>
 import Task from './../components/Task.vue';
+import AddTask from './../components/AddTask.vue';
 
 import { createClient } from '@supabase/supabase-js'
 const supabaseUrl = 'https://ezobnhwtsnemtgajfsce.supabase.co'
@@ -21,10 +28,11 @@ const supabase = createClient(supabaseUrl, supabaseKey)
 export default {
     name: 'List',
     components: {
-        Task
+        Task,
+        AddTask
     },
     props: [
-        "tasks"
+        "tasks",
     ],
     data() {
         return {
@@ -36,6 +44,12 @@ export default {
         }
     },
      methods: {
+         async addTask(newTaskObj) {
+         newTaskObj.list_id = this.list_id
+         console.log(newTaskObj.list_id);
+
+            await supabase.from("tasks").insert([newTaskObj]);
+        },
         async deleteTask(id) {
             await supabase
             .from('tasks')
@@ -66,6 +80,7 @@ export default {
         .eq('uuid', uuid)
 
         let listID = lists[0].id
+        this.list_id = lists[0].id
         this.title = lists[0].name
         this.lists = lists
 
@@ -75,6 +90,7 @@ export default {
         .from("tasks")
         .select("*")
         .eq('list_id', listID)
+        .order('inserted_at', 'ascending')
 
         this.error = taskError
         
@@ -85,7 +101,7 @@ export default {
         .from('tasks')
         .on('INSERT', payload => {
         console.log('Change received!', payload)
-        this.tasksArr.push(payload.new);
+        this.tasksArr.unshift(payload.new);
         })
         .on('UPDATE', payload => {
         console.log('Change received!', payload)

@@ -1,8 +1,17 @@
 <template>
   <ul v-bind:class="{ 'completed': task.completed }" class="task-item">
-    <li @click="$emit('complete-task', task.uuid)">{{ task.title }}</li>
-    <li class="edit">edit</li>
-    <li class="delete" @click="$emit('delete-task', task.uuid)">delete</li>    
+    <li class="check">
+        <span>complete</span>
+        <div class="round">
+            <input type="checkbox" id="checkbox" />
+            <label for="checkbox" @click="$emit('complete-task', task.uuid)"></label>
+        </div>
+  </li>
+    <li class="title-and-text">
+        <h3>{{ task.title }}</h3>
+        <p>{{task.text}}</p>
+    </li>
+    <li class="delete" @click="$emit('delete-task', task.uuid)" style="display: none;">delete</li>    
   </ul>
 </template>
 <script>
@@ -20,7 +29,6 @@ export default {
     cursor: pointer;
 }
   .completed {
-    text-decoration: line-through;
     color: #999;
   }
   p {
@@ -29,4 +37,100 @@ export default {
 	margin: 0;
 	font-size: 16px;
 }
+
+ul.task-item .check ,
+ul.task-item:hover .check {
+	background: transparent;
+}
+
+ul.task-item {
+  flex-flow: row nowrap;
+  margin: 0;
+  align-items: flex-start;
+}
+ul.task-item .check {
+  width: 60px;
+  height: 100%;
+  display: block;
+}
+
+ul.task-item .check span {
+  display: none;
+}
+
+ul.task-item .title-and-text {
+  width: calc(100% - 80px);
+  display: flex;
+  flex-flow: column;
+  justify-content: flex-start;
+  background: transparent;
+  padding: 0 0 0 10px;
+  box-sizing: border-box;
+}
+
+ul.task-item .title-and-text h3, ul.task-item .title-and-text p {
+  padding: 0;
+  margin: 0;
+  width: 100%;
+display: block;
+}
+
+ul.task-item .title-and-text p {
+  font-size: .8rem;
+}
+
+ul.task-item.completed  .title-and-text {
+    text-decoration: line-through;
+  }
+
+.round {
+	position: relative;
+}
+
+.round input[type="checkbox"] {
+	visibility: hidden;
+}
+
+.round label {
+	background-color: #282828;
+	border: 2px solid #ccc;
+	border-radius: 50%;
+	cursor: pointer;
+	height: 28px;
+	left: 0;
+	position: absolute;
+	top: 0;
+	width: 28px;
+	transition: all ease .25s;
+}
+
+.round label::after {
+	border: 2px solid #111;
+	border-top: none;
+	border-right: none;
+	content: "";
+	height: 6px;
+	left: 7px;
+	opacity: 0;
+	position: absolute;
+	top: 8px;
+	transform: rotate(-45deg);
+	width: 12px;
+}
+ul.task-item .check {
+	display: flex;
+	flex-flow: row;
+	justify-content: center;
+	align-items: center;
+}
+
+.completed .round label {
+	background-color: #66bb6a;
+	border-color: #66bb6a;
+}
+
+.completed .round label::after {
+	opacity: 1;
+}
+
 </style>
