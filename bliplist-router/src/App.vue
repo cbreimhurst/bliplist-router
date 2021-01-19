@@ -79,9 +79,6 @@ main {
     margin: 0 auto;
 }
 
-h2 {
-	font-weight: 900;
-}
 
 ul {
   display: flex;

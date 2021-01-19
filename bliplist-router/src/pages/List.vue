@@ -3,7 +3,7 @@
         <h2>{{title}}</h2>
         <ul class="list">
             <li v-bind:key="task.uuid" :data-id="task.uuid" v-for="task in tasksArr">
-            <Task  v-bind:task="task" v-on:delete-task="deleteTask" v-on:complete-todo="markComplete"/>
+            <Task  v-bind:task="task" v-on:delete-task="deleteTask" v-on:complete-task="markComplete"/>
             </li>
         </ul>
         <a href="/lists"><button>All Lists</button></a>
@@ -37,30 +37,23 @@ export default {
     },
      methods: {
         async deleteTask(id) {
-            console.log(id)
             await supabase
             .from('tasks')
             .delete()
             .eq('uuid', id)
         },
         async markComplete(taskID) {
-            let todosObj = this.todos;
-            var todoItem = todosObj.find(function(todo) {
-                if(todo.uuid == taskID)
+            let taskObj = this.tasksArr;
+            var taskItem = taskObj.find(function(task) {
+                if(task.uuid == taskID)
                 return true;
             });
-            todoItem.completed = !todoItem.completed
-            //console.log(todoItem.completed)
-            let complete = todoItem.completed
-            console.log(complete)
-
-            //console.log(complete)
+            taskItem.completed = !taskItem.completed
+            let complete = taskItem.completed
             await supabase
                 .from('tasks')
                 .update({ completed: complete })
                 .eq('uuid', taskID)
-
-        // localStorage.todos = JSON.stringify(this.todos);
         },
     },
     async created() {
@@ -86,6 +79,24 @@ export default {
         this.error = taskError
         
         this.tasksArr = tasks;
+    },
+      mounted() {
+        supabase
+        .from('tasks')
+        .on('INSERT', payload => {
+        console.log('Change received!', payload)
+        this.tasksArr.push(payload.new);
+        })
+        .on('UPDATE', payload => {
+        console.log('Change received!', payload)
+        })
+        .on("DELETE", payload => {
+            const id = payload.old.id;
+            const index = this.tasksArr.map(x => x.id).indexOf(id);
+            this.tasksArr.splice(index, 1)
+        })
+        .subscribe();
+
     },
 }
 </script>

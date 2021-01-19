@@ -139,4 +139,15 @@ header div {
 	transition: left 0.25s, background .25s;
     background:#192734;
 }
+
+
+h2 {
+	font-weight: 900;
+}
+
+
+h2 a {
+	color: #fff;
+	text-decoration: none;
+}
 </style>
