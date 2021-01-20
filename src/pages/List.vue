@@ -90,7 +90,7 @@ export default {
         .from("tasks")
         .select("*")
         .eq('list_id', listID)
-        .order('inserted_at', true)
+        .order('inserted_at', {ascending: false})
 
         this.error = taskError
         

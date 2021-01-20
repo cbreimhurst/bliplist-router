@@ -10,10 +10,6 @@
 <script>
 import Header from './components/Header.vue'
 
-import { createClient } from '@supabase/supabase-js'
-const supabaseUrl = 'https://ezobnhwtsnemtgajfsce.supabase.co'
-const supabaseKey = process.env.VUE_APP_SUPABASE_KEY;
-const supabase = createClient(supabaseUrl, supabaseKey)
 
 export default {
   name: 'App',
