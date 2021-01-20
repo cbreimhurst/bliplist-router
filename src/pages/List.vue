@@ -40,7 +40,10 @@ export default {
             lists: null,
             tasksArr: [],
             error: null,
-            title: null
+            title: null,
+            // edit_task_id: null,
+            // edit_title: null,
+            // edit_text: null,
         }
     },
      methods: {
@@ -48,17 +51,19 @@ export default {
             newTaskObj.list_id = this.list_id
             await supabase.from("tasks").insert([newTaskObj]);
         },
-        async editTask(newTaskObj) {
-            console.log(newTaskObj);
-            let app = document.querySelector('#app');
-            console.log(app);
-            //app.classList.add('edit-open')
+        async editTask(taskID) {
+            console.log(taskID)
+            // let taskArrItem = this.tasksArr.findIndex(x => x.uuid === taskID)
+            // this.edit_task_id = taskArrItem
+            // this.edit_title = this.tasksArr[taskArrItem].title
+            // this.edit_text = this.tasksArr[taskArrItem].text
 
-                if (app.classList.contains('edit-open')) {
-                   app.classList.remove('edit-open')
-                } else {
-                    app.classList.add('edit-open')
-                }
+            let app = document.querySelector('#app');
+            if (app.classList.contains('edit-open')) {
+                app.classList.remove('edit-open')
+            } else {
+                app.classList.add('edit-open')
+            }
         },
         async deleteTask(id) {
             await supabase
@@ -67,6 +72,7 @@ export default {
             .eq('uuid', id)
         },
         async markComplete(taskID) {
+            console.log(taskID)
             let taskObj = this.tasksArr;
             var taskItem = taskObj.find(function(task) {
                 if(task.uuid == taskID)
@@ -100,6 +106,7 @@ export default {
         .from("tasks")
         .select("*")
         .eq('list_id', listID)
+        .neq('in_trash', true)
         .order('inserted_at', {ascending: false})
 
         this.error = taskError

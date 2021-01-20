@@ -1,10 +1,11 @@
 <template>
   <div class="edit-task">
+    {{edit_title}}
     <form @submit="editTask">
       <div class="input-wrap">
             <input 
             type="text" 
-            v-model="title" 
+            v-model="edit_title" 
             name="title" 
             spellcheck="false" 
             autocomplete="off"
@@ -12,7 +13,7 @@
             autocapitalize="off"
             >
             <textarea 
-            v-model="text" 
+            v-model="edit_text" 
             name="text" 
             spellcheck="false" 
             autocomplete="off"
@@ -27,26 +28,31 @@
 </template>
 
 <script>
-import { v4 as uuidv4 } from 'uuid';
 
 
 
 export default {
   name: 'EditTask',
   props: {
-  
+    task: {
+        type: String
+    },
+      edit_title: {
+        type: String
+    },
+      edit_text: {
+        type: String
+    }
   },
   data() {
     return {
-      title: '',
-      text: '',
     }
   },
   methods: {
     editTask(e) {
       e.preventDefault();      
       const newTaskObj = {
-        uuid: uuidv4(),
+       // uuid: uuidv4(),
         title: this.title,
         text: this.text,
         completed: false,
@@ -56,7 +62,7 @@ export default {
     },
   },
   mounted() {
-    
+   // console.log(this.task)
   }
 }
 </script>
@@ -75,6 +81,7 @@ export default {
 }
 
 .edit-open .edit-task {
+
 	transform: translate(0px,0%);
 }
 
