@@ -133,7 +133,7 @@ padding: 10px;
 }
 
 li {
-  min-height: 100px;
+  min-height: 50px;
   display: flex;
   align-items: center;
 }
@@ -141,7 +141,7 @@ li {
 
 .list > li {
   margin-bottom: 10px;
-  min-height: 100px;
+  min-height: 50px;
   display: flex;
   align-items: center;
 }

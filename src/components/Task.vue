@@ -68,11 +68,16 @@ ul.task-item .title-and-text {
   box-sizing: border-box;
 }
 
-ul.task-item .title-and-text h3, ul.task-item .title-and-text p {
+ul.task-item .title-and-text h3, 
+ul.task-item .title-and-text p {
   padding: 0;
   margin: 0;
   width: 100%;
 display: block;
+}
+
+ul.task-item .title-and-text h3 {
+  font-size: .88rem;
 }
 
 ul.task-item .title-and-text p {
@@ -85,6 +90,7 @@ ul.task-item.completed  .title-and-text {
 
 .round {
 	position: relative;
+  transform: translate(0px,-1px);
 }
 
 .round input[type="checkbox"] {
@@ -96,11 +102,11 @@ ul.task-item.completed  .title-and-text {
 	border: 2px solid #ccc;
 	border-radius: 50%;
 	cursor: pointer;
-	height: 28px;
+	height: 20px;
 	left: 0;
 	position: absolute;
 	top: 0;
-	width: 28px;
+	width: 20px;
 	transition: all ease .25s;
 }
 
@@ -110,10 +116,10 @@ ul.task-item.completed  .title-and-text {
 	border-right: none;
 	content: "";
 	height: 6px;
-	left: 7px;
+	left: 3px;
 	opacity: 0;
 	position: absolute;
-	top: 8px;
+	top: 5px;
 	transform: rotate(-45deg);
 	width: 12px;
 }
