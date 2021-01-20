@@ -79,8 +79,9 @@ export default {
   border: none;
   color: #fff;
   padding: 5px;
-  font-size: 1.5rem;
+  font-size: 1.1rem;
   font-weight: 900;
+  font-family: Avenir, Helvetica, Arial, sans-serif;
 }
 .add-task form .input-wrap textarea {
   width: 100%;
@@ -88,6 +89,10 @@ export default {
   border: none;
   height: 80px;
   box-sizing: border-box;
+  color: #fff;
+  padding: 5px;
+  font-size: .8rem;
+  font-family: Avenir, Helvetica, Arial, sans-serif;
 }
 .add-task form {
   display: flex;

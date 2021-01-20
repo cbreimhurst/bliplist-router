@@ -59,7 +59,7 @@ ul.task-item .check span {
 }
 
 ul.task-item .title-and-text {
-  width: calc(100% - 80px);
+  width: 100%;
   display: flex;
   flex-flow: column;
   justify-content: flex-start;
