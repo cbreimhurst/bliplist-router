@@ -7,11 +7,10 @@
             <label for="checkbox" @click="$emit('complete-task', task.uuid)"></label>
         </div>
   </li>
-    <li class="title-and-text">
+    <li class="title-and-text" @click="$emit('edit-task', task.uuid)">
         <h3>{{ task.title }}</h3>
         <p>{{task.text}}</p>
     </li>
-    <li class="delete" @click="$emit('delete-task', task.uuid)" style="display: none;">delete</li>    
   </ul>
 </template>
 <script>
@@ -130,12 +129,18 @@ ul.task-item .check {
 	align-items: center;
 }
 
-.completed .round label {
-	background-color: #66bb6a;
-	border-color: #66bb6a;
+.round:hover label {
+	background-color: #668ebb;
+	border-color: #668ebb;
 }
 
-.completed .round label::after {
+.completed .round label {
+	background-color: #6a6a6a;
+	border-color: #6a6a6a;
+}
+
+.completed .round label::after,
+.round:hover label::after {
 	opacity: 1;
 }
 

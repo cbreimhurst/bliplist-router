@@ -4,21 +4,20 @@
         <AddTask v-on:add-task="addTask" />
         <ul class="list">
             <li v-bind:key="task.uuid" :data-id="task.uuid" v-for="task in tasksArr">
-            <Task  v-bind:task="task" v-on:delete-task="deleteTask" v-on:complete-task="markComplete"/>
+            <Task  v-bind:task="task" v-on:delete-task="deleteTask" v-on:complete-task="markComplete" v-on:edit-task="editTask" />
             </li>
         </ul>
-        <!-- <button class="add-task-init"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-plus" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-  <line x1="12" y1="5" x2="12" y2="19" />
-  <line x1="5" y1="12" x2="19" y2="12" />
-</svg></button> -->
-        <a href="/lists"><button>All Lists</button></a>
+        <a href="/lists" class="all-lists"><button>← All Lists</button></a>
+
+
+        <EditTask v-on:edit-task="editTask" />
     </div>
 </template>
 
 <script>
 import Task from './../components/Task.vue';
 import AddTask from './../components/AddTask.vue';
+import EditTask from './../components/EditTask.vue';
 
 import { createClient } from '@supabase/supabase-js'
 const supabaseUrl = 'https://ezobnhwtsnemtgajfsce.supabase.co'
@@ -29,7 +28,8 @@ export default {
     name: 'List',
     components: {
         Task,
-        AddTask
+        AddTask,
+        EditTask
     },
     props: [
         "tasks",
@@ -45,10 +45,20 @@ export default {
     },
      methods: {
          async addTask(newTaskObj) {
-         newTaskObj.list_id = this.list_id
-         console.log(newTaskObj.list_id);
-
+            newTaskObj.list_id = this.list_id
             await supabase.from("tasks").insert([newTaskObj]);
+        },
+        async editTask(newTaskObj) {
+            console.log(newTaskObj);
+            let app = document.querySelector('#app');
+            console.log(app);
+            //app.classList.add('edit-open')
+
+                if (app.classList.contains('edit-open')) {
+                   app.classList.remove('edit-open')
+                } else {
+                    app.classList.add('edit-open')
+                }
         },
         async deleteTask(id) {
             await supabase
@@ -100,11 +110,12 @@ export default {
         supabase
         .from('tasks')
         .on('INSERT', payload => {
-        console.log('Change received!', payload)
-        this.tasksArr.unshift(payload.new);
+            this.tasksArr.unshift(payload.new);
         })
         .on('UPDATE', payload => {
-        console.log('Change received!', payload)
+            let updatedUUID = payload.new.uuid
+            let taskArrItem = this.tasksArr.findIndex(x => x.uuid === updatedUUID)
+            Object.assign(this.tasksArr[taskArrItem], payload.new);
         })
         .on("DELETE", payload => {
             const id = payload.old.id;
@@ -145,5 +156,26 @@ li {
   display: flex;
   align-items: center;
 }
+
+
+.all-lists button {
+  background-color: #181818;
+  background-color: #181818;
+  color: #fff;
+  font-size: 1.3rem;
+  padding: 10px 30px;
+  border-radius: 4px;
+  margin-top: 60px;
+  transition: all ease .25s;
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-weight: 900;
+  border: solid #fff 1px;
+}
+
+.all-lists button:hover {
+  background: #282828;
+  border: solid #66bb6a 1px;
+}
+
 
 </style>
