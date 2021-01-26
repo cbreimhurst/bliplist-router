@@ -75,43 +75,4 @@ main {
     margin: 0 auto;
 }
 
-
-ul {
-  display: flex;
-  flex-flow: row wrap;
-  list-style: none;
-  margin: 0 auto;
-  padding: 0;
-}
-
-li {
-  transition: background 0.3s ease-in-out, color 0.3s ease-in-out;
-  display: flex;
-  border-radius: 4px;
-  background: #e6e4e0;
-}
-
-.dark li {
-  background-color: #181818;
-}
-
-.dark li:hover {
-  background-color: #282828;
-}
-
-li a {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	height: 100%;
-	width: 100%;
-	color: #2c3e50;
-	text-decoration: none;
-	font-weight: 900;
-	font-size: 1.3rem;
-}
-
-.dark li a {
-	color: #fff;
-}
 </style>

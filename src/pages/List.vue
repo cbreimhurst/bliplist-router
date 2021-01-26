@@ -2,8 +2,8 @@
     <div>
         <h2 @click="loadTasks">{{title}}</h2>
         <ul>
-            <li>Last updated: {{listUpdated}}</li>
-            <li>Created on: {{listCreated}}</li>
+            <li>Last updated {{listUpdated | ago}}</li>
+            <li>Created {{listCreated | ago}}</li>
         </ul>
         <AddTask v-on:add-task="addTask" />
         <ul class="list">
@@ -22,6 +22,7 @@
 import Task from './../components/Task.vue';
 import AddTask from './../components/AddTask.vue';
 import EditTask from './../components/EditTask.vue';
+
 
 import { createClient } from '@supabase/supabase-js'
 const supabaseUrl = 'https://ezobnhwtsnemtgajfsce.supabase.co'
@@ -164,10 +165,67 @@ export default {
         .subscribe();
 
     },
+    filters: {
+        ago: function (time) {
+            var unixTime = new Date(time).getTime();
+            if (!unixTime) return;
+            var now = new Date().getTime();
+
+            // Calculate difference
+            var difference = (unixTime / 1000) - (now / 1000);
+
+            // Setup return object
+            var tfn = {};
+
+            // Check if time is in the past, present, or future
+            tfn.when = 'now';
+            if (difference > 0) {
+            tfn.when = 'future';
+            } else if (difference < -1) {
+            tfn.when = 'past';
+            }
+
+            // Convert difference to absolute
+            difference = Math.abs(difference);
+
+            // Calculate time unit
+            if (difference / (60 * 60 * 24 * 365) > 1) {
+            // Years
+            tfn.unitOfTime = 'years';
+            tfn.time = Math.floor(difference / (60 * 60 * 24 * 365));
+            } else if (difference / (60 * 60 * 24 * 45) > 1) {
+            // Months
+            tfn.unitOfTime = 'months';
+            tfn.time = Math.floor(difference / (60 * 60 * 24 * 45));
+            } else if (difference / (60 * 60 * 24) > 1) {
+            // Days
+            tfn.unitOfTime = 'days';
+            tfn.time = Math.floor(difference / (60 * 60 * 24));
+            } else if (difference / (60 * 60) > 1) {
+            // Hours
+            tfn.unitOfTime = 'hours';
+            tfn.time = Math.floor(difference / (60 * 60));
+            } else {
+            // Seconds
+            tfn.unitOfTime = 'seconds';
+            tfn.time = Math.floor(difference);
+            }
+
+            // Return time from now data
+            let unit = tfn.unitOfTime;
+            if(tfn.time == 1){
+               unit = unit.slice(0, -1)
+            }
+            return tfn.time + " " + unit + " ago";
+        }
+    }
+    
 }
 </script>
 
 <style scoped>
+
+
 h2 {
     font-size: 3rem;
     font-weight: 900;
