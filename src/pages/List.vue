@@ -1,10 +1,14 @@
 <template>
     <div>
-        <h2>{{title}}</h2>
+        <h2 @click="loadTasks">{{title}}</h2>
+        <ul>
+            <li>Last updated: {{listUpdated}}</li>
+            <li>Created on: {{listCreated}}</li>
+        </ul>
         <AddTask v-on:add-task="addTask" />
         <ul class="list">
             <li v-bind:key="task.uuid" :data-id="task.uuid" v-for="task in tasksArr">
-            <Task  v-bind:task="task" v-on:delete-task="deleteTask" v-on:complete-task="markComplete" v-on:edit-task="editTask" />
+            <Task  v-bind:task="task" v-on:delete-task="deleteTask" v-on:bin-task="binTask" v-on:complete-task="markComplete" v-on:edit-task="editTask" />
             </li>
         </ul>
         <a href="/lists" class="all-lists"><button>← All Lists</button></a>
@@ -37,6 +41,9 @@ export default {
     data() {
         return {
             list_id: null,
+            listUUID: null,
+            listUpdated: null,
+            listCreated: null,
             lists: null,
             tasksArr: [],
             error: null,
@@ -48,8 +55,14 @@ export default {
     },
      methods: {
          async addTask(newTaskObj) {
+            let d = new Date();
+            let listUUID = this.$route.params.uuid;
             newTaskObj.list_id = this.list_id
             await supabase.from("tasks").insert([newTaskObj]);
+            await supabase
+                .from('lists')
+                .update({ updated_at: d.toISOString() })
+                .eq('uuid', listUUID)
         },
         async editTask(taskID) {
             console.log(taskID)
@@ -85,33 +98,52 @@ export default {
                 .update({ completed: complete })
                 .eq('uuid', taskID)
         },
+        async binTask(taskID) {
+            let taskObj = this.tasksArr;
+            var taskItem = taskObj.find(function(task) {
+                if(task.uuid == taskID)
+                return true;
+            });
+            taskItem.in_trash = !taskItem.in_trash
+            console.log(taskItem)
+            let trashed = taskItem.in_trash
+            await supabase
+                .from('tasks')
+                .update({ in_trash: trashed })
+                .eq('uuid', taskID)
+            this.loadTasks()
+        },
+        async loadTasks() {
+
+            let { data: lists, error } = await supabase
+            .from('lists')
+            .select("*")
+            .eq('uuid', this.listUUID)
+
+            let listID = lists[0].id
+            this.list_id = lists[0].id
+            this.listUpdated = lists[0].updated_at
+            this.listCreated = lists[0].inserted_at
+            this.title = lists[0].name
+            this.lists = lists
+
+            this.error = error
+
+            let { data: tasks, taskError } = await supabase
+            .from("tasks")
+            .select("*")
+            .eq('list_id', listID)
+            .neq('in_trash', true)
+            .order('inserted_at', {ascending: false})
+
+            this.error = taskError
+            
+            this.tasksArr = tasks;
+        },
     },
     async created() {
-
-        let uuid = this.$route.params.uuid;
-
-        let { data: lists, error } = await supabase
-        .from('lists')
-        .select("*")
-        .eq('uuid', uuid)
-
-        let listID = lists[0].id
-        this.list_id = lists[0].id
-        this.title = lists[0].name
-        this.lists = lists
-
-        this.error = error
-
-        let { data: tasks, taskError } = await supabase
-        .from("tasks")
-        .select("*")
-        .eq('list_id', listID)
-        .neq('in_trash', true)
-        .order('inserted_at', {ascending: false})
-
-        this.error = taskError
-        
-        this.tasksArr = tasks;
+        this.listUUID = this.$route.params.uuid;
+        this.loadTasks();
     },
       mounted() {
         supabase

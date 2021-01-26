@@ -6,11 +6,12 @@
             <input type="checkbox" id="checkbox" />
             <label for="checkbox" @click="$emit('complete-task', task.uuid)"></label>
         </div>
-  </li>
+    </li>
     <li class="title-and-text" @click="$emit('edit-task', task.uuid)">
         <h3>{{ task.title }}</h3>
         <p>{{task.text}}</p>
     </li>
+    <li class="bin" @click="$emit('bin-task', task.uuid)">bin</li>
   </ul>
 </template>
 <script>
