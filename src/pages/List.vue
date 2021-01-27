@@ -57,13 +57,12 @@ export default {
      methods: {
          async addTask(newTaskObj) {
             let d = new Date();
-            let listUUID = this.$route.params.uuid;
             newTaskObj.list_id = this.list_id
             await supabase.from("tasks").insert([newTaskObj]);
             await supabase
                 .from('lists')
                 .update({ updated_at: d.toISOString() })
-                .eq('uuid', listUUID)
+                .eq('uuid', this.listUUID)
         },
         async editTask(taskID) {
             console.log(taskID)
@@ -101,6 +100,7 @@ export default {
         },
         async binTask(taskID) {
             let taskObj = this.tasksArr;
+            let d = new Date();
             var taskItem = taskObj.find(function(task) {
                 if(task.uuid == taskID)
                 return true;
@@ -112,6 +112,12 @@ export default {
                 .from('tasks')
                 .update({ in_trash: trashed })
                 .eq('uuid', taskID)
+
+            await supabase
+            .from('lists')
+            .update({ updated_at: d.toISOString() })
+            .eq('uuid', this.listUUID)
+
             this.loadTasks()
         },
         async loadTasks() {
