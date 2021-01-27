@@ -1,8 +1,7 @@
 <template>
   <div id="app" v-on:mode="toggle" :class="mode">
  <Header :mode="mode" @toggle="toggle" />
- <pre>{{session}}</pre>
- <pre>{{user}}</pre>
+ <a v-if="user" href="lists">Lists</a>
  <main>
  <router-view/>
  </main>

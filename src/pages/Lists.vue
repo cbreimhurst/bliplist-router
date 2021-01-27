@@ -1,7 +1,6 @@
 <template>
     <div class="lists">
         <h2>Lists</h2>
-        {{user_info.id}}
          <ul>
             <li v-bind:key="list.uuid" :data-id="list.uuid" v-for="list in listsArr">
                 <a :href="'/list/'+ list.uuid">{{list.name}}</a>
