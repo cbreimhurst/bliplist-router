@@ -1,6 +1,7 @@
 <template>
     <div class="lists">
         <h2>Lists</h2>
+        {{user_info.id}}
          <ul>
             <li v-bind:key="list.uuid" :data-id="list.uuid" v-for="list in listsArr">
                 <a :href="'/list/'+ list.uuid">{{list.name}}</a>
@@ -24,13 +25,16 @@ export default {
         data() {
         return {
             listsArr: [],
+            user_info: null
         }
     },
     async created() {
 
+        this.user_info = supabase.auth.user()
         let { data: lists, error } = await supabase
         .from('lists')
         .select("*")
+        .eq('user_uuid', this.user_info.id)
 
         this.listsArr = lists
         this.error = error

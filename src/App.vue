@@ -1,6 +1,8 @@
 <template>
   <div id="app" v-on:mode="toggle" :class="mode">
  <Header :mode="mode" @toggle="toggle" />
+ <pre>{{session}}</pre>
+ <pre>{{user}}</pre>
  <main>
  <router-view/>
  </main>
@@ -10,6 +12,10 @@
 <script>
 import Header from './components/Header.vue'
 
+import { createClient } from '@supabase/supabase-js'
+const supabaseUrl = 'https://ezobnhwtsnemtgajfsce.supabase.co'
+const supabaseKey = process.env.VUE_APP_SUPABASE_KEY;
+const supabase = createClient(supabaseUrl, supabaseKey)
 
 export default {
   name: 'App',
@@ -19,6 +25,8 @@ export default {
   data() {
     return {
       mode: 'light',
+      session: null,
+      user: null
     }
   },
   methods: {
@@ -35,6 +43,13 @@ export default {
       this.mode = localStorage.mode;
     }
   },
+      async created() {
+
+   
+    this.session = supabase.auth.session()
+    this.user = supabase.auth.user()
+
+    },
   watch: {
     mode(newMode) {
       localStorage.mode = newMode;
