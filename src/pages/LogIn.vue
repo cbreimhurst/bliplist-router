@@ -2,9 +2,6 @@
     <div class="log-in">
         <h2>Log In</h2>
         <pre>
-            {{user}}
-        </pre>
-        <pre>
             {{error}}
         </pre>
        <form @submit="send">
@@ -64,16 +61,22 @@ export default {
     },
     async created() {
 
-   
+
 
     },
+      mounted() {
+        // if (localStorage.supabase.auth.token) {
+        //     this.user = localStorage.supabase.auth.token.currentSession.user;
+        // }
+        this.user = supabase.auth.session()
+
+  },
     methods: {
         async send(e) {
             e.preventDefault();      
             let { user, error } = await supabase.auth.signIn(this.logIn)
             this.error = error
             this.user = user
-            localStorage.user = ""
             this.logIn.email = this.logIn.password = ""
         }
 },

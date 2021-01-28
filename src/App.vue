@@ -44,12 +44,17 @@ export default {
     if (localStorage.mode) {
       this.mode = localStorage.mode;
     }
+        // if (localStorage.supabase.auth.token) {
+        //     this.user = localStorage.supabase.auth.token.currentSession.user;
+        // }
+
+      this.user = supabase.auth.session()
   },
-      async created() {
+    async created() {
 
    
-    this.session = supabase.auth.session()
-    this.user = supabase.auth.user()
+      this.session = supabase.auth.session()
+      this.user = supabase.auth.user()
 
     },
   watch: {

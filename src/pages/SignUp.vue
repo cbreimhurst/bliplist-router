@@ -2,9 +2,6 @@
     <div class="sign-up">
         <h2>Sign Up</h2>
         <pre>
-            {{user}}
-        </pre>
-        <pre>
             {{error}}
         </pre>
        <form @submit="send">
@@ -65,8 +62,13 @@ export default {
     async created() {
 
 
-
     },
+      mounted() {
+        if (localStorage.supabase.auth.token) {
+            this.user = localStorage.supabase.auth.token.currentSession.user;
+        }
+
+  },
     methods: {
         async send(e) {
         e.preventDefault();      

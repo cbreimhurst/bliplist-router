@@ -1,6 +1,9 @@
 <template>
     <div class="lists">
         <h2>Lists</h2>
+        <pre>{{user_info}}</pre>
+        
+        {{error}}
          <ul>
             <li v-bind:key="list.uuid" :data-id="list.uuid" v-for="list in listsArr">
                 <a :href="'/list/'+ list.uuid">{{list.name}}</a>
@@ -27,16 +30,23 @@ export default {
             user_info: null
         }
     },
+  mounted() {
+        if (localStorage.supabase.auth.token) {
+            this.user = localStorage.supabase.auth.token.currentSession.user;
+        }
+
+  },
     async created() {
 
-        this.user_info = supabase.auth.user()
-        let { data: lists, error } = await supabase
-        .from('lists')
-        .select("*")
-        .eq('user_uuid', this.user_info.id)
+        if (this.user_info) {
+            let { data: lists, error } = await supabase
+            .from('lists')
+            .select("*")
+            .eq('user_uuid', this.user_info.id)
 
-        this.listsArr = lists
-        this.error = error
+            this.listsArr = lists
+            this.error = error
+        }
 
     },
 }
