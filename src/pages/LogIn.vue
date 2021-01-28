@@ -1,6 +1,12 @@
 <template>
     <div class="log-in">
         <h2>Log In</h2>
+        <pre>
+            {{user}}
+        </pre>
+        <pre>
+            {{error}}
+        </pre>
        <form @submit="send">
            <div class="input-wrap">
                <label for="email">
@@ -52,6 +58,8 @@ export default {
                 email: null,
                 password: null
             },
+            error: null,
+            user: null
         }
     },
     async created() {
@@ -62,7 +70,10 @@ export default {
     methods: {
         async send(e) {
             e.preventDefault();      
-            await supabase.auth.signIn(this.logIn)
+            let { user, error } = await supabase.auth.signIn(this.logIn)
+            this.error = error
+            this.user = user
+            localStorage.user = ""
             this.logIn.email = this.logIn.password = ""
         }
 },

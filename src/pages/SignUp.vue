@@ -1,7 +1,12 @@
 <template>
     <div class="sign-up">
         <h2>Sign Up</h2>
-        {{error}}
+        <pre>
+            {{user}}
+        </pre>
+        <pre>
+            {{error}}
+        </pre>
        <form @submit="send">
            <div class="input-wrap">
                <label for="email">
@@ -68,7 +73,7 @@ export default {
         let { user, error } = await supabase.auth.signUp(this.signUp)
         this.error = error
         this.user = user
-            this.signUp.email = this.signUp.password = ""
+        this.signUp.email = this.signUp.password = ""
     }
 },
 }
